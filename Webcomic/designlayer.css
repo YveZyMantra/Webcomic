@@ -1,0 +1,257 @@
+/* ============================================================
+   WEBCOMIC SCROLL-ANIMATION SCAFFOLD
+   – Vertical long-strip (webtoon style)
+   – Panels are still by default, animate when scrolled into view
+   ============================================================ */
+
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* You can tweak these tokens later */
+  --bg-dark:       #0b0b0f;
+  --bg-panel:      #141419;
+  --border-panel:  #1e1e2a;
+  --text-muted:    #5a5a72;
+  --text-label:    #8888aa;
+  --accent:        #6c5ce7;
+  --accent-glow:   rgba(108, 92, 231, .25);
+  --panel-radius:  12px;
+  --strip-width:   720px;       /* webtoon standard-ish width */
+  --panel-gap:     0px;         /* 0 for seamless strip, increase for gaps */
+  --transition-in: .6s cubic-bezier(.22, 1, .36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-dark);
+  color: #ccc;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ---------- Strip Container ---------- */
+.comic-strip {
+  max-width: var(--strip-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+  padding: 60px 0 120px;
+}
+
+/* ---------- Single Panel ---------- */
+.panel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--panel-radius);
+  border: 1px solid var(--border-panel);
+  background: var(--bg-panel);
+
+  /* Entrance animation — starts hidden/offset */
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity var(--transition-in),
+              transform var(--transition-in);
+}
+
+.panel.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Panel Image (still frame) ---------- */
+.panel__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* ---------- Panel Animated Layer ---------- */
+/*
+  Put your animated content (sprite sheet, CSS anim, <video>, lottie, etc.)
+  in .panel__anim. It sits on top of the still image and is hidden until
+  the panel is in-view.
+*/
+.panel__anim {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.panel.in-view .panel__anim {
+  opacity: 1;
+}
+
+/* Convenience: if anim is a <video> or <canvas>, fill the panel */
+.panel__anim video,
+.panel__anim canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Placeholder styling (remove when real art is in) ---------- */
+.panel--placeholder {
+  aspect-ratio: 3 / 4;           /* typical webtoon panel ratio */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel--placeholder .placeholder-label {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel--placeholder .placeholder-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px dashed var(--border-panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 28px;
+  transition: border-color .4s, color .4s, box-shadow .4s;
+}
+
+.panel.in-view .placeholder-icon {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ---------- Animated-element demo keyframes ---------- */
+/*
+  These are example keyframes you can replace with your own.
+  They're triggered when .panel.in-view .demo-anim-* is active.
+*/
+
+/* Float up-and-down loop */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-18px); }
+}
+
+/* Subtle pulse */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.06); opacity: .85; }
+}
+
+/* Shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px) rotate(-1deg); }
+  40%      { transform: translateX(5px) rotate(1deg); }
+  60%      { transform: translateX(-4px) rotate(-.5deg); }
+  80%      { transform: translateX(3px) rotate(.5deg); }
+}
+
+/* Wipe-reveal from left */
+@keyframes wipe-in {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+/* Fade-and-slide up */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Anim classes (active only when panel is in-view) --- */
+.panel.in-view .anim-float   { animation: float 3s ease-in-out infinite; }
+.panel.in-view .anim-pulse   { animation: pulse 2s ease-in-out infinite; }
+.panel.in-view .anim-shake   { animation: shake .6s ease-in-out 1; }
+.panel.in-view .anim-wipe    { animation: wipe-in .8s ease-out forwards; }
+.panel.in-view .anim-rise    { animation: rise-in .7s ease-out forwards; }
+
+/* ---------- Scene-specific animation layers ---------- */
+/*
+  Use these for individual elements within a panel.
+  Example: a character that floats, a speech bubble that wipes in.
+*/
+.scene-element {
+  position: absolute;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.panel.in-view .scene-element {
+  opacity: 1;
+}
+
+/* Stagger children entrance */
+.panel.in-view .scene-element:nth-child(1) { transition-delay: .1s; }
+.panel.in-view .scene-element:nth-child(2) { transition-delay: .25s; }
+.panel.in-view .scene-element:nth-child(3) { transition-delay: .4s; }
+.panel.in-view .scene-element:nth-child(4) { transition-delay: .55s; }
+.panel.in-view .scene-element:nth-child(5) { transition-delay: .7s; }
+
+/* ---------- Chapter / Section Dividers ---------- */
+.chapter-divider {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-label);
+  font-size: 12px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.chapter-divider::before,
+.chapter-divider::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: var(--border-panel);
+}
+
+.chapter-divider::before { top: 30px; }
+.chapter-divider::after  { bottom: 30px; }
+
+/* ---------- Progress bar (top of viewport) ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #a29bfe);
+  width: 0%;
+  z-index: 999;
+  transition: width .1s linear;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 780px) {
+  :root {
+    --strip-width: 100%;
+    --panel-radius: 0px;
+  }
+
+  .comic-strip {
+    padding: 0 0 80px;
+  }
+}
