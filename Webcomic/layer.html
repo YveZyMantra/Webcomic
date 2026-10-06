@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A heartfelt scroll-animated webcomic — warm panels that come alive as you read.">
+  <title>Webcomic — Scroll &amp; Animate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="designlayer.css">
+</head>
+<body>
+
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <!-- ============================================================
+       COMIC STRIP
+       
+       HOW TO USE:
+       
+       1. STILL PANEL (image only)
+          <div class="panel">
+            <img class="panel__image" src="your-art.png" alt="Scene description">
+          </div>
+       
+       2. PANEL WITH ANIMATED OVERLAY
+          The still image shows by default. When scrolled into view,
+          .panel__anim fades in on top — put a video, canvas, or
+          animated elements inside it.
+          
+          <div class="panel" data-anim-video>
+            <img class="panel__image" src="still-frame.png" alt="Scene">
+            <div class="panel__anim">
+              <video src="animation.webm" muted playsinline loop></video>
+            </div>
+          </div>
+       
+       3. PANEL WITH CSS-ANIMATED ELEMENTS
+          Place individual elements with animation classes.
+          
+          <div class="panel">
+            <img class="panel__image" src="background.png" alt="Scene">
+            <div class="panel__anim">
+              <img class="scene-element anim-float" src="character.png"
+                   style="top:20%; left:30%; width:40%;" alt="Character">
+              <img class="scene-element anim-rise" src="speech-bubble.png"
+                   style="top:10%; right:10%; width:30%;" alt="Dialogue">
+            </div>
+          </div>
+       
+       4. DATA ATTRIBUTES
+          data-anim-once="true"   → plays only the first time
+          data-anim-delay="500"   → 500ms delay before activating
+          data-anim-video         → auto-plays <video> inside panel__anim
+       
+       5. SPRITE SHEETS
+          <div class="panel__anim"
+               data-sprite-src="spritesheet.png"
+               data-sprite-cols="8"
+               data-sprite-rows="4"
+               data-sprite-fps="12">
+          </div>
+       ============================================================ -->
+
+  <div class="comic-strip">
+
+    <!-- ======== CHAPTER 1 ======== -->
+    <div class="chapter-divider">Chapter 1</div>
+
+    <!-- Panel 1 — Simple still placeholder -->
+    <div class="panel panel--placeholder" id="panel-1">
+      <div class="placeholder-icon">1</div>
+      <span class="placeholder-label">Image here — Still panel</span>
+      <!--
+        REPLACE THIS WHOLE .panel--placeholder WITH:
+        <div class="panel" id="panel-1">
+          <img class="panel__image" src="art/panel-01.png" alt="Opening scene">
+        </div>
+      -->
+    </div>
+
+    <!-- Panel 2 — Still + animated overlay placeholder -->
+    <div class="panel panel--placeholder" id="panel-2" data-anim-video>
+      <div class="placeholder-icon">2</div>
+      <span class="placeholder-label">Image here — Plays video overlay on scroll</span>
+      <!--
+        REPLACE WITH:
+        <div class="panel" id="panel-2" data-anim-video>
+          <img class="panel__image" src="art/panel-02-still.png" alt="Scene 2">
+          <div class="panel__anim">
+            <video src="art/panel-02-anim.webm" muted playsinline loop></video>
+          </div>
+        </div>
+      -->
+    </div>
+
+    <!-- Panel 3 — CSS animation demo placeholder -->
+    <div class="panel panel--placeholder" id="panel-3">
+      <div class="placeholder-icon anim-float">3</div>
+      <span class="placeholder-label">Image here — Elements float up and down</span>
+      <!--
+        REPLACE WITH:
+        <div class="panel" id="panel-3">
+          <img class="panel__image" src="art/panel-03-bg.png" alt="Background">
+          <div class="panel__anim">
+            <img class="scene-element anim-float"
+                 src="art/character.png"
+                 style="bottom:10%; left:20%; width:50%;"
+                 alt="Floating character">
+          </div>
+        </div>
+      -->
+    </div>
+
+    <!-- Panel 4 — Wipe-reveal demo -->
+    <div class="panel panel--placeholder" id="panel-4" data-anim-once="true">
+      <div class="placeholder-icon anim-wipe">4</div>
+      <span class="placeholder-label">Image here — Wipe-reveal, plays once</span>
+    </div>
+
+    <!-- Panel 5 — Delayed entrance -->
+    <div class="panel panel--placeholder" id="panel-5" data-anim-delay="400">
+      <div class="placeholder-icon anim-rise">5</div>
+      <span class="placeholder-label">Image here — Slides up with delay</span>
+    </div>
+
+    <!-- Panel 6 — Shake -->
+    <div class="panel panel--placeholder" id="panel-6">
+      <div class="placeholder-icon anim-shake">6</div>
+      <span class="placeholder-label">Image here — Shakes on reveal</span>
+    </div>
+
+    <!-- Panel 7 — Pulse -->
+    <div class="panel panel--placeholder" id="panel-7">
+      <div class="placeholder-icon anim-pulse">7</div>
+      <span class="placeholder-label">Image here — Pulse loop</span>
+    </div>
+
+    <!-- Panel 8 — Staggered elements -->
+    <div class="panel panel--placeholder" id="panel-8" style="position:relative;">
+      <div class="placeholder-icon">8</div>
+      <span class="placeholder-label">Image here — Staggered entrance</span>
+      <div class="panel__anim" style="display:flex; gap:16px; justify-content:center; align-items:center; position:static; opacity:1;">
+        <div class="scene-element anim-rise" style="position:static; width:40px; height:40px; border-radius:50%; background:var(--accent); opacity:0;"></div>
+        <div class="scene-element anim-rise" style="position:static; width:40px; height:40px; border-radius:50%; background:var(--leaf-green); opacity:0;"></div>
+        <div class="scene-element anim-rise" style="position:static; width:40px; height:40px; border-radius:50%; background:var(--blush); opacity:0;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Load the scroll controller -->
+  <script src="interaction.js"></script>
+
+</body>
+</html>
