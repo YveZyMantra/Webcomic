@@ -1,0 +1,179 @@
+/* ============================================================
+   WEBCOMIC — MANHWA VERTICAL-SCROLL READER
+   – Seamless vertical long-strip (webtoon / manhwa style)
+   – Panels fade in gently on scroll
+   – Clean, immersive reading experience
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Nunito:wght@400;500;600;700&display=swap');
+
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Dark immersive reader palette */
+  --bg-page:       #1a1a1e;          /* dark background for contrast */
+  --bg-panel:      #ffffff;          /* clean white panel */
+  --border-panel:  rgba(255,255,255,0.06);
+  --border-hover:  rgba(255,255,255,0.12);
+  --text-body:     #e0dcd6;          /* warm light text */
+  --text-muted:    #8a8580;
+  --accent:        #e8946a;          /* soft peach-orange */
+  --accent-light:  #f5c6a8;
+  --accent-warm:   #d4785a;
+  --accent-glow:   rgba(232, 148, 106, .15);
+  --blush:         #e8b4b8;
+  --sky-blue:      #a8c8e0;
+  --panel-radius:  4px;
+  --strip-width:   720px;
+  --panel-gap:     0px;              /* seamless manhwa flow — no gaps */
+  --transition-in: .7s cubic-bezier(.22, 1, .36, 1);
+  --shadow-soft:   0 4px 30px rgba(0, 0, 0, .3);
+  --shadow-hover:  0 8px 40px rgba(0, 0, 0, .4);
+
+  /* Fonts */
+  --font-body:     'Nunito', 'Segoe UI', system-ui, sans-serif;
+  --font-display:  'Caveat', cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  /* Subtle ambient glow */
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(232, 148, 106, .03) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(168, 200, 224, .03) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ---------- Strip Container ---------- */
+.comic-strip {
+  max-width: var(--strip-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+  padding: 40px 0 120px;
+}
+
+/* ---------- Single Panel ---------- */
+.panel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--panel-radius);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow-soft);
+
+  /* Entrance animation — starts hidden/offset */
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--transition-in),
+    transform var(--transition-in),
+    box-shadow .3s ease;
+}
+
+.panel:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.panel.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Panel Image ---------- */
+.panel__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  /* Ensures no gap below image caused by inline baseline */
+  vertical-align: bottom;
+}
+
+/* ---------- Chapter / Section Dividers ---------- */
+.chapter-divider {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--accent-warm);
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.chapter-divider::before,
+.chapter-divider::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
+  border-radius: 1px;
+}
+
+.chapter-divider::before { top: 20px; }
+.chapter-divider::after  { bottom: 20px; }
+
+/* Small decorative dot in the center of divider lines */
+.chapter-divider::before {
+  box-shadow: 0 0 0 3px var(--bg-page), 0 0 0 4px var(--accent-light);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.chapter-divider::after {
+  box-shadow: none;
+}
+
+/* ---------- Progress bar (top of viewport) ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--blush), var(--sky-blue));
+  width: 0%;
+  z-index: 999;
+  transition: width .1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 780px) {
+  :root {
+    --strip-width: 100%;
+    --panel-radius: 0px;
+    --panel-gap: 0px;
+  }
+
+  .comic-strip {
+    padding: 0 0 80px;
+  }
+
+  .panel {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .chapter-divider {
+    font-size: 22px;
+    padding: 48px 16px;
+  }
+}
